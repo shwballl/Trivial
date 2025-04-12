@@ -2,5 +2,8 @@ Django>=4.2
 psycopg2-binary
 django-filter
 djangorestframework
-
+drf-spectacular 
+drf-spectacular-sidecar
+PyJWT
+django-cors-headers
 # python manage.py tailwind init
