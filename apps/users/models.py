@@ -7,7 +7,12 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, blank=False, null=False)
     username = models.CharField(max_length=30, null=True, blank=True, default=None)
     name = models.CharField(max_length=30, null=True, blank=True, default=None)
-
+    rating = models.IntegerField(default=0)
+    image = models.ImageField(null=True, blank=True, default=None)
+    created_tasks = models.IntegerField(default=0)
+    completed_tasks = models.IntegerField(default=0)
+    about_me = models.TextField(null=True, blank=True, default=None)
+    socials = models.JSONField(null=True, blank=True, default=None)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ["name"]
