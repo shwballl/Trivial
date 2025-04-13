@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.db import models
 
+from apps.users.models import User
+
 class Task(models.Model):
     CATEGORIES = {
         "web": "web", "text": "text", "video": "video", "image": "image", "design": "design", "programming": "programming", "other": "other", "all": "all"
@@ -16,7 +18,7 @@ class Task(models.Model):
     category = models.CharField(max_length=20, choices=CATEGORIES, default="OTHER")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
     
     class Meta:
         db_table = "tasks"

@@ -2,8 +2,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,12 +19,10 @@ ALLOWED_HOSTS = ["*"]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
-
-
-
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'apps.users',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,9 +34,10 @@ INSTALLED_APPS = [
     'rest_framework',
     "drf_spectacular",
     'corsheaders',
+    'channels',
     
     'apps.tasks',
-    'apps.core',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +56,7 @@ ROOT_URLCONF = 'trivial.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,6 +69,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'trivial.asgi.application'
 WSGI_APPLICATION = 'trivial.wsgi.application'
 
 
@@ -164,3 +162,9 @@ SPECTACULAR_SETTINGS = {
 
 CORS_ORGINAL_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
