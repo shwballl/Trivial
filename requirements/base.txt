@@ -10,5 +10,3 @@ django-cors-headers
 Pillow
 channels
 daphne
-
-# python manage.py tailwind init

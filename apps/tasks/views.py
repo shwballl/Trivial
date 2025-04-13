@@ -19,6 +19,14 @@ class TasksAPIView(APIView):
         }
     )
     def get(self, request):
+        """Handles GET request for user's task list.
+
+        Args:
+            request: The HTTP request object.
+
+        Returns:
+            Response: A response containing the list of user's tasks or an error message.
+        """
         user = get_user_from_cookie(request=request)
         
         if not user:
@@ -37,6 +45,14 @@ class TasksAPIView(APIView):
         }
     )
     def post(self, request):
+        """Handles POST request to create a new task.
+
+        Args:
+            request: The HTTP request object.
+
+        Returns:
+            Response: A response confirming task creation success or an error message.
+        """
         user = get_user_from_cookie(request=request)
         user.created_tasks += 1
         user.save()
@@ -66,6 +82,14 @@ class TasksAPIView(APIView):
         }
     )
     def delete(self, request):
+        """Handles DELETE request to remove a task.
+
+        Args:
+            request: The HTTP request object.
+
+        Returns:
+            Response: A response confirming task deletion success or an error message.
+        """
         user = get_user_from_cookie(request=request)
         
         if not user:
@@ -83,6 +107,7 @@ class TasksAPIView(APIView):
 
 @extend_schema(summary="All Created Tasks", description="List of All Created Tasks")
 class TaskListView(generics.ListAPIView):
+    """API view for listing all created tasks."""
     queryset = CreatedTask.objects.all()
     serializer_class = TaskSerializer
     filter_backends = [DjangoFilterBackend]
@@ -98,6 +123,15 @@ class TasksDetailAPIView(APIView):
         }
     )
     def get(self, request, task_id):
+        """Handles GET request for task detail.
+
+        Args:
+            request: The HTTP request object.
+            task_id: The ID of the task.
+
+        Returns:
+            Response: A response containing task details or an error message.
+        """
         task = CreatedTask.objects.filter(id=task_id).first()
         
         if not task:
@@ -117,6 +151,15 @@ class TasksTakeAPIView(APIView):
         }    
     )
     def post(self, request, task_id):
+        """Handles POST request to take a task.
+
+        Args:
+            request: The HTTP request object.
+            task_id: The ID of the task.
+
+        Returns:
+            Response: A response confirming task taken success or an error message.
+        """
         user = get_user_from_cookie(request=request)
         
         if not user:
@@ -141,6 +184,14 @@ class TakenTasksAPIView(APIView):
         }
     )
     def get(self, request):
+        """Handles GET request for taken tasks list.
+
+        Args:
+            request: The HTTP request object.
+
+        Returns:
+            Response: A response containing the list of taken tasks or an error message.
+        """
         user = get_user_from_cookie(request=request)
         
         if not user:
@@ -161,6 +212,15 @@ class CloseTakenTaskAPIView(APIView):
         }    
     )
     def post(self, request, task_id):
+        """Handles POST request to close a taken task.
+
+        Args:
+            request: The HTTP request object.
+            task_id: The ID of the task.
+
+        Returns:
+            Response: A response confirming task closing success or an error message.
+        """
         user = get_user_from_cookie(request=request)
         user.completed_tasks += 1
         user.save()
@@ -175,4 +235,3 @@ class CloseTakenTaskAPIView(APIView):
         
         task.close()
         return Response({"status": "Task closed success"}, status=status.HTTP_200_OK)
-    

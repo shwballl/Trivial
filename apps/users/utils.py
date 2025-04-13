@@ -4,7 +4,17 @@ from django.core.mail import EmailMultiAlternatives
 
 from apps.users.models import User
 
-def get_user_from_cookie(*, request) -> User:
+
+def get_user_from_cookie(*, request: object) -> User:
+    """
+    Get user from jwt token in cookies.
+
+    Args:
+        request: django request object
+
+    Returns:
+        User instance if token is valid, None otherwise
+    """
     token = request.COOKIES.get('jwt')
 
     if not token:
@@ -21,11 +31,24 @@ def get_user_from_cookie(*, request) -> User:
     
     return user
 
-def generate_code():
+
+def generate_code() -> str:
+    """
+    Generate a 6 digit random code.
+
+    Returns:
+        str: 6 digit random code
+    """
     return str(random.randint(100000, 999999))
 
 
-def send_verification_email(user):
+def send_verification_email(user: User) -> None:
+    """
+    Send verification email to user.
+
+    Args:
+        user: User instance
+    """
     code = generate_code()
     user.verification_code = code
     user.save()

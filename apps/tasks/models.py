@@ -4,6 +4,9 @@ from django.db import models
 from apps.users.models import User
 
 class CreatedTask(models.Model):
+    """
+    Model of created task.
+    """
     CATEGORIES = {
         "web": "web", "text": "text", "video": "video", "image": "image", "design": "design", "programming": "programming", "other": "other", "all": "all"
     }
@@ -31,9 +34,15 @@ class CreatedTask(models.Model):
     
 
     def __str__(self):
+        """
+        String representation of task.
+        """
         return self.title
 
 class TakedTask(models.Model):
+    """
+    Model of taked task.
+    """
     id = models.AutoField(primary_key=True)
     task = models.ForeignKey(CreatedTask, on_delete=models.CASCADE, related_name="taked_tasks")
     executor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_tasks")
@@ -45,10 +54,11 @@ class TakedTask(models.Model):
         return str(self.task)
     
     def close(self):
+        """
+        Close task.
+        """
         self.task.is_completed = True
         self.task.save()
         self.delete()
         return "success"
-    
-    
     

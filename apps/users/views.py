@@ -11,8 +11,13 @@ from datetime import datetime, timedelta
 from apps.users.serializers import UserProfileSerializer, UserSerializer, UserLoginSerializer, UserUpdateSerializer, VerifyEmailSerializer
 
 from apps.users.utils import send_verification_email
-
 class RegisterAPIView(APIView):
+    """
+    Register user
+    
+    Accepts email, password, name, about_me, socials in request body
+    Returns user object with id, email, name, about_me, socials, is_verified, verification_code
+    """
     @extend_schema(
         summary="Register user",
         description="Register user",
@@ -30,6 +35,12 @@ class RegisterAPIView(APIView):
 
 
 class VerifyEmailAPIView(APIView):
+    """
+    Verify email
+    
+    Accepts email, code in request body
+    Returns status message
+    """
     @extend_schema(
         summary="Verify email",
         description="Verify email",
@@ -62,6 +73,12 @@ class VerifyEmailAPIView(APIView):
 
 
 class LoginAPIView(APIView):
+    """
+    User login
+    
+    Accepts email, password in request body
+    Returns user object with id, email, name, about_me, socials, is_verified, verification_code
+    """
     @extend_schema(
         summary="User login",
         description="User login",
@@ -103,6 +120,12 @@ class LoginAPIView(APIView):
         return response
     
 class LogoutAPIView(APIView):
+    """
+    User logout
+    
+    Deletes jwt cookie
+    Returns status message
+    """
     @extend_schema(
         summary="User logout",
         description="User logout",
@@ -121,6 +144,12 @@ class LogoutAPIView(APIView):
         return response
 
 class DeleteUserAPIView(APIView):
+    """
+    Delete user
+    
+    Deletes user object
+    Returns status message
+    """
     @extend_schema(
         summary="User delete",
         description="User delete",
@@ -135,9 +164,22 @@ class DeleteUserAPIView(APIView):
 
 
 class UserProfileAPIView(APIView):
+    """
+    Get user profile
+    
+    Returns user object with id, email, name, about_me, socials, is_verified, verification_code
+    """
     @extend_schema(
         summary="User profile",
         description="User profile",
+        parameters=[
+            OpenApiParameter(
+                name="user_id",
+                location=OpenApiParameter.PATH,
+                type=OpenApiTypes.INT,
+                description="User ID",
+            )
+        ],
         responses={
             401: OpenApiResponse(description="Unauthorized"),
             200: OpenApiResponse(description="User profile"),
@@ -153,6 +195,12 @@ class UserProfileAPIView(APIView):
         return Response({"user": serializer_class.data}, status=status.HTTP_200_OK)
 
 class UserUpdateAPIView(APIView):
+    """
+    Update user
+    
+    Accepts email, password, name, about_me, socials in request body
+    Returns user object with id, email, name, about_me, socials, is_verified, verification_code
+    """
     @extend_schema(
         summary="User update",
         description="User update",
@@ -171,6 +219,12 @@ class UserUpdateAPIView(APIView):
         return Response({"status": "User update success"}, status=status.HTTP_200_OK)
 
 class UserProfileRatingAPIView(APIView):
+    """
+    Update user rating
+    
+    Accepts user_id, rating, operation in request body
+    Returns status message
+    """
     @extend_schema(
         summary="User rating update",
         description="User rating update",
