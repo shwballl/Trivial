@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from apps.users.models import User
 from apps.users.utils import get_user_from_cookie
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
 import jwt
 from datetime import datetime, timedelta
 
@@ -169,3 +169,53 @@ class UserUpdateAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"status": "User update success"}, status=status.HTTP_200_OK)
+
+class UserProfileRatingAPIView(APIView):
+    @extend_schema(
+        summary="User rating update",
+        description="User rating update",
+        parameters=[
+            OpenApiParameter(
+                name="user_id",
+                location=OpenApiParameter.PATH,
+                type=OpenApiTypes.INT,
+                description="User ID",
+            ),
+            OpenApiParameter(
+                name="rating",
+                location=OpenApiParameter.PATH,
+                type=OpenApiTypes.INT,
+                description="Rating",
+            ),
+            OpenApiParameter(
+                name="operation",
+                location=OpenApiParameter.PATH,
+                type=OpenApiTypes.INT,
+                description="Operation: 1-add rating/2-substract rating",
+            ),
+        ],
+        responses={
+            404: OpenApiResponse(description="User not found"),
+            200: OpenApiResponse(description="User rating updated"),
+        }
+    )
+    def get(self,request, user_id, rating, operation):
+        user = User.objects.filter(id=user_id).first()
+        
+        operation = operation
+        
+        if not user:
+            return Response({"status": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if operation == 1:
+            user.rating += rating
+        elif operation == 2:
+            user.rating -= rating
+        
+        if user.rating > 5:
+            user.rating = 5
+        elif user.rating < 0:
+            user.rating = 0
+            
+        user.save()
+        return Response({"status":"User rating updated for " + str(user.name), "rating": user.rating}, status=status.HTTP_200_OK)

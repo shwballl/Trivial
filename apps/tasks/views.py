@@ -12,7 +12,7 @@ from apps.users.utils import get_user_from_cookie
 
 class TasksAPIView(APIView):
     @extend_schema(
-        summary="Task list",
+        summary="User's Task list",
         description="List of User's tasks.",
         responses={
             200: OpenApiResponse(description="Task list"),
@@ -38,6 +38,8 @@ class TasksAPIView(APIView):
     )
     def post(self, request):
         user = get_user_from_cookie(request=request)
+        user.created_tasks += 1
+        user.save()
         serializer_class = TaskCreateSerializer(data=request.data)
         serializer_class.is_valid(raise_exception=True)
         serializer_class.save(creator=user)
@@ -79,6 +81,7 @@ class TasksAPIView(APIView):
         return Response({"status": "Task deleted success"}, status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema(summary="All Created Tasks", description="List of All Created Tasks")
 class TaskListView(generics.ListAPIView):
     queryset = CreatedTask.objects.all()
     serializer_class = TaskSerializer
@@ -159,6 +162,8 @@ class CloseTakenTaskAPIView(APIView):
     )
     def post(self, request, task_id):
         user = get_user_from_cookie(request=request)
+        user.completed_tasks += 1
+        user.save()
         
         if not user:
             return Response({"status": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)

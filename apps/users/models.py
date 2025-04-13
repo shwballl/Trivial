@@ -31,3 +31,8 @@ class User(AbstractUser):
         if not self.username:
             self.username = self.email
         super().save(*args, **kwargs)
+        
+    def add_rating(self, rating):
+        self.rating += rating
+    def substract_rating(self, rating):
+        self.rating -= rating
