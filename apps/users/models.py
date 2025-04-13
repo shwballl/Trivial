@@ -13,6 +13,8 @@ class User(AbstractUser):
     completed_tasks = models.IntegerField(default=0)
     about_me = models.TextField(null=True, blank=True, default=None)
     socials = models.JSONField(null=True, blank=True, default=None)
+    is_verified = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ["name"]

@@ -1,4 +1,6 @@
 import jwt
+import random
+from django.core.mail import EmailMultiAlternatives
 
 from apps.users.models import User
 
@@ -18,3 +20,34 @@ def get_user_from_cookie(*, request) -> User:
         return None
     
     return user
+
+def generate_code():
+    return str(random.randint(100000, 999999))
+
+
+def send_verification_email(user):
+    code = generate_code()
+    user.verification_code = code
+    user.save()
+
+    subject = 'Your verification code!'
+    from_email = 'trivial6@gmail.com'
+    to_email = user.email
+
+    # HTML and plain text versions
+    html_content = f"""
+        <html>
+        <body>
+            <h2>Hello, {user.email}!</h2>
+            <p>Your verification code is:</p>
+            <h1 style="color: #4CAF50;">{code}</h1>
+        </body>
+        </html>
+    """
+    text_content = f"Hello, {user.email}! Your verification code is: {code}"
+
+    # Construct message
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+

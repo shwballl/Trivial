@@ -34,3 +34,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'name', 'email', 'rating', 'image', 'created_tasks', 'completed_tasks', 'about_me', 'socials')
+        
+class VerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField()

@@ -8,20 +8,58 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
 import jwt
 from datetime import datetime, timedelta
 
-from apps.users.serializers import UserProfileSerializer, UserSerializer, UserLoginSerializer, UserUpdateSerializer
+from apps.users.serializers import UserProfileSerializer, UserSerializer, UserLoginSerializer, UserUpdateSerializer, VerifyEmailSerializer
+
+from apps.users.utils import send_verification_email
 
 class RegisterAPIView(APIView):
     @extend_schema(
-        summary="User register",
-        description="User register",
+        summary="Register user",
+        description="Register user",
         request=UserSerializer,
-        responses=UserSerializer
+        responses={
+            201: OpenApiResponse(description="User registered successfully"),
+        }
     )
     def post(self, request):
-        serializer_class = UserSerializer(data=request.data)
-        serializer_class.is_valid(raise_exception=True)
-        serializer_class.save()
-        return Response({"status": "User register success"}, status=status.HTTP_201_CREATED)
+        serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        send_verification_email(user)
+        return Response({"status": "Verification code sent to email"}, status=status.HTTP_201_CREATED)
+
+
+class VerifyEmailAPIView(APIView):
+    @extend_schema(
+        summary="Verify email",
+        description="Verify email",
+        request=VerifyEmailSerializer,
+        responses={
+            200: OpenApiResponse(description="Email verified successfully"),
+            400: OpenApiResponse(description="Invalid verification code"),
+            404: OpenApiResponse(description="User not found"),
+        }
+    )
+    def post(self, request):
+        serializer = VerifyEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+        code = serializer.validated_data["code"]
+
+        user = User.objects.filter(email=email).first()
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+
+        if user.verification_code != code:
+            return Response({"error": "Invalid verification code"}, status=400)
+
+        user.is_verified = True
+        user.verification_code = None
+        user.save()
+
+        return Response({"status": "Email verified successfully"}, status=200)
+
 
 class LoginAPIView(APIView):
     @extend_schema(
@@ -41,6 +79,9 @@ class LoginAPIView(APIView):
         user = User.objects.filter(email=email).first()
         if not user:
             return Response({"status": "User with this email not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if not user.is_verified:
+            return Response({"status": "User is not verified"}, status=status.HTTP_401_UNAUTHORIZED)
         
         if not user.check_password(password):
             return Response({"status": "Invalid password"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -71,7 +112,10 @@ class LogoutAPIView(APIView):
     )
     def post(self, request):
         response = Response()
-        response.delete_cookie(key='jwt')
+        try:
+            response.delete_cookie(key='jwt')
+        except:
+            return Response({"status": "error"}, status=status.HTTP_401_UNAUTHORIZED)
         response.data = {'status': 'success'}
         response.status_code = 200
         return response
