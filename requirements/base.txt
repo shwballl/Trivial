@@ -4,6 +4,7 @@ django-filter
 djangorestframework
 drf-spectacular 
 drf-spectacular-sidecar
+django-filter
 PyJWT
 django-cors-headers
 Pillow

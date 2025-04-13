@@ -2,6 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
+
 
 from apps.tasks.models import CreatedTask, TakedTask
 from apps.tasks.serializers import TakeTaskSerializer, TaskCreateSerializer, TaskSerializer, TaskDetailSerializer
@@ -76,23 +79,11 @@ class TasksAPIView(APIView):
         return Response({"status": "Task deleted success"}, status=status.HTTP_204_NO_CONTENT)
 
 
-class AllTasksAPIView(APIView):
-    @extend_schema(
-        summary="Task list",
-        description="List of all tasks.",
-        responses={
-            200: OpenApiResponse(description="Task list"),
-        }
-    )
-    def get(self, request):
-        queryset = CreatedTask.objects.all()
-        category = request.query_params.get('category')
-        
-        if category in CreatedTask.CATEGORIES:
-            queryset = queryset.filter(category=category)
-        
-        serializer_class = TaskSerializer(queryset, many=True)
-        return Response({"tasks": serializer_class.data}, status=status.HTTP_200_OK)
+class TaskListView(generics.ListAPIView):
+    queryset = CreatedTask.objects.all()
+    serializer_class = TaskSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'is_completed', 'category']
     
 
 class TasksDetailAPIView(APIView):
@@ -179,3 +170,4 @@ class CloseTakenTaskAPIView(APIView):
         
         task.close()
         return Response({"status": "Task closed success"}, status=status.HTTP_200_OK)
+    
