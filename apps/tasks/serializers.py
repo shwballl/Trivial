@@ -1,13 +1,15 @@
 from rest_framework import serializers
 
 from apps.tasks.models import CreatedTask
-from apps.users.serializers import UserSerializer
+from apps.users.serializers import UserProfileSerializer
 
 
 class TaskSerializer(serializers.ModelSerializer):
     """
     Serializer for CreatedTask model.
     """
+    
+    creator = UserProfileSerializer()
     class Meta:
         model = CreatedTask
         fields = ['id','title', 'description', 'is_completed', 'expires_at', 'category', 'price', 'creator']
@@ -25,7 +27,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     """
     Serializer for a detailed view of a CreatedTask.
     """
-    creator = UserSerializer()
+    creator = UserProfileSerializer()
     class Meta:
         model = CreatedTask
         fields = ['id', 'title', 'description', 'is_completed', 'created_at' ,'expires_at', 'category', 'price', 'creator']

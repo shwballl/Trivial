@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 type HeaderProps = {
     onLoginClick: () => void;
     onRegisterClick: () => void;
@@ -9,13 +11,13 @@ function Header({ onLoginClick, onRegisterClick }: HeaderProps) {
             <header>
                 <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 bg-white border-b border-gray-600">
                     <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl border-solid">
-                        <a href="#" className="flex items-center">
+                         <Link to="/" className="flex items-center">
                             <svg width="40" height="40" className="mr-2" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M28.6663 46.7212C19.5238 46.29 12.25 38.7575 12.25 29.5C12.25 19.9837 19.9837 12.25 29.5 12.25C38.7575 12.25 46.29 19.5238 46.7212 28.6663L40.6838 26.855C39.505 21.7663 34.9338 18 29.5 18C23.1462 18 18 23.1462 18 29.5C18 34.9338 21.7663 39.505 26.855 40.6838L28.6663 46.7212ZM58.25 29.5C58.25 30.3625 58.2212 31.225 58.135 32.0875L52.4712 30.3913C52.5 30.1038 52.5 29.7875 52.5 29.5C52.5 16.7925 42.2075 6.5 29.5 6.5C16.7925 6.5 6.5 16.7925 6.5 29.5C6.5 42.2075 16.7925 52.5 29.5 52.5C29.7875 52.5 30.1038 52.5 30.3913 52.4712L32.0875 58.135C31.225 58.2212 30.3625 58.25 29.5 58.25C13.63 58.25 0.75 45.37 0.75 29.5C0.75 13.63 13.63 0.75 29.5 0.75C45.37 0.75 58.25 13.63 58.25 29.5ZM47.4112 41.7475L58.25 38.125L29.5 29.5L38.125 58.25L41.7475 47.4112L54.0238 59.6875L59.7163 53.995L47.4112 41.7475Z" fill="black" />
                             </svg>
 
                             <span className="self-center text-xl font-semibold whitespace-nowrap text-black font-bold">Trivial</span>
-                        </a>
+                        </Link>
                         <div className="flex items-center lg:order-2">
                             <button
                                 onClick={onLoginClick}
@@ -35,20 +37,20 @@ function Header({ onLoginClick, onRegisterClick }: HeaderProps) {
                         <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
                             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                                 <li>
-                                    <a href="#" className="block py-2 pr-4 pl-3  rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 text-black" aria-current="page">
-                                    Find a Task
-                                    </a>
+                                    <Link to="/" className="block py-2 pr-4 pl-3  rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 text-black" aria-current="page">
+                                        Find a Task
+                                    </Link>
                                 </li>
 
                                 <li>
-                                    <a href="#" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:text-black lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 text-gray-400 lg:hover:text-black hover:bg-gray-700 hover:text-white lg:hover:bg-transparent border-gray-700">
+                                <Link to="/create-task/" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:text-black lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 text-gray-400 lg:hover:text-black hover:bg-gray-700 hover:text-white lg:hover:bg-transparent border-gray-700">
                                         Create a Task
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100  hover:text-black lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 text-gray-400 lg:hover:text-black hover:bg-gray-700 hover:text-white lg:hover:bg-transparent border-gray-700">
+                                <Link to="/me/tasks/" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100  hover:text-black lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 text-gray-400 lg:hover:text-black hover:bg-gray-700 hover:text-white lg:hover:bg-transparent border-gray-700">
                                         My Tasks
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
