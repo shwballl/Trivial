@@ -16,7 +16,7 @@ interface Task {
     creator: Creator;
 }
 
-const categories = ['all', 'design', 'web', 'text'];
+const categories = ['all', 'design', 'web', 'text', 'video', 'image', 'programming', 'other'];
 
 // Icons for different categories
 const categoryIcons = {

@@ -137,7 +137,7 @@ function TaskDetail() {
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-teal-600">${task.price}</div>
-              <div className={`rounded-full px-3 py-1 text-sm font-medium ${task.is_completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+              <div className={`rounded-full px-3 py-1 text-sm font-medium align-center justify-center ${task.is_completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                 {task.is_completed ? 'Completed' : 'Active'}
               </div>
             </div>
