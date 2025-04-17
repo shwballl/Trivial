@@ -29,9 +29,8 @@ class RegisterAPIView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        send_verification_email(user)
-        return Response({"status": "Verification code sent to email"}, status=status.HTTP_201_CREATED)
+        serializer.save()
+        return Response({"status": "User registered successfully", "user": serializer.data}, status=status.HTTP_201_CREATED)
 
 
 class VerifyEmailAPIView(APIView):
@@ -105,7 +104,6 @@ class LoginAPIView(APIView):
         
         payload = {
             'id': user.id,
-            'email': user.email,
             'exp': datetime.now() + timedelta(minutes=60),
             'iat': datetime.now()
         }
@@ -114,10 +112,48 @@ class LoginAPIView(APIView):
         
         response = Response()
         
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {'status': 'success', 'jwt': token}
+        response.set_cookie(
+            key='jwt',
+            value=token,
+            httponly=True,
+            samesite='None',
+            secure=False  # True for HTTPS
+        )
+        response.data = {'jwt': token}
+        response.status_code = 200
         
         return response
+    
+class UserAPIView(APIView):
+    """
+    User info
+    
+    Returns user object with id, email, name, about_me, socials, is_verified, verification_code
+    """
+    @extend_schema(
+        summary="User info",
+        description="User info",
+        responses={
+            200: OpenApiResponse(description="User info"),
+        }
+    )
+    def get(self, request):
+        token = request.COOKIES.get('jwt')
+        print("COOKIES:", request.COOKIES)
+
+        if not token:
+            return Response({"status": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return Response({"status": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        user = User.objects.get(id=payload["id"])
+        
+        serializer = UserSerializer(user)
+        
+        return Response({"user": serializer.data}, status=status.HTTP_200_OK)
     
 class LogoutAPIView(APIView):
     """

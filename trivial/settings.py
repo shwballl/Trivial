@@ -160,9 +160,18 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-CORS_ORGINAL_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False  # Лучше явно указать разрешённые origins
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:8002',  # Добавьте если нужно
+    'http://127.0.0.1:8002',
+]
+
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS=['http://localhost:3000', 'http://127.0.0.1:3000']
+SESSION_COOKIE_SAMESITE = 'Lax'  # Still limits GET across sites
+CSRF_COOKIE_SAMESITE = 'Lax'
+
 
 CHANNEL_LAYERS = {
     "default": {

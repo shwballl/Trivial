@@ -20,7 +20,6 @@ class User(AbstractUser):
         verification_code (CharField): Code for user verification.
     """
     email = models.EmailField(unique=True, blank=False, null=False)
-    username = models.CharField(max_length=30, null=True, blank=True, default=None)
     name = models.CharField(max_length=30, null=True, blank=True, default=None)
     rating = models.IntegerField(default=0)
     image = models.ImageField(null=True, blank=True, default=None)
@@ -30,9 +29,10 @@ class User(AbstractUser):
     socials = models.JSONField(null=True, blank=True, default=None)
     is_verified = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
+    username = None
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ["name"]
+    REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
 
